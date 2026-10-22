@@ -1,4 +1,6 @@
 #include <stdint.h>
+#include <stdio.h>
+
 #define MEM_SIZE (1024 * 1024) /* 1mb */
 #define INSTRUCTION_SIZE 4 /* in bytes */
 #define BYTE_SIZE 8 /* in bits */
@@ -16,3 +18,4 @@ typedef struct {
 
 uint32_t read_instruction(CPU* cpu);
 void cpu_step(CPU* cpu);
+void cpu_dump_registers(CPU* cpu);
