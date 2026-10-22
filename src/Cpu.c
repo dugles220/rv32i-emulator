@@ -31,6 +31,21 @@ void cpu_step(CPU* cpu){
 
 }
 
+void write_addi(CPU* cpu, uint32_t offset, uint8_t rd, uint8_t rs1, int16_t imm){
+
+    uint32_t addi_instr = 0;
+
+    addi_instr |= ADDI_OP;
+    addi_instr |= (uint32_t)rd << 7;
+    addi_instr |= (uint32_t)rs1 << 15;
+    addi_instr |= (uint32_t)imm << 20;
+
+    for(uint32_t i = 0; i < INSTRUCTION_SIZE; i++){
+        cpu->memory[offset + i] |= addi_instr >> i * BYTE_SIZE;
+    }
+
+}
+
 void cpu_dump_registers(CPU* cpu){
 
     printf("%-10s %8d\n\n", "pc", cpu->pc);

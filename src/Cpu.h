@@ -19,3 +19,4 @@ typedef struct {
 uint32_t read_instruction(CPU* cpu);
 void cpu_step(CPU* cpu);
 void cpu_dump_registers(CPU* cpu);
+void write_addi(CPU* cpu, uint32_t offset, uint8_t rd, uint8_t rs1, int16_t imm);
