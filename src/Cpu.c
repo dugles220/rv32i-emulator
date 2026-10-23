@@ -19,7 +19,7 @@ void cpu_step(CPU* cpu){
     uint8_t rd = (instruction >> 7) & 0x1F; /* bits 7-11 */
     uint8_t funct3 = (instruction >> 12) & 0x07; /* bits 12-14 */
     uint8_t rs1 = (instruction >> 15) & 0x1F; /* bits 15-19 */
-    uint16_t imm = instruction >> 20; /* bits 20-31 */
+    int32_t imm = ((int32_t)(instruction & 0xFFF00000)) >> 20;
 
     /* ADDI */
     if(opcode == ADDI_OP && funct3 == 0x00){
@@ -38,7 +38,8 @@ void write_addi(CPU* cpu, uint32_t offset, uint8_t rd, uint8_t rs1, int16_t imm)
     addi_instr |= ADDI_OP;
     addi_instr |= (uint32_t)rd << 7;
     addi_instr |= (uint32_t)rs1 << 15;
-    addi_instr |= (uint32_t)imm << 20;
+    addi_instr |= ((uint32_t)imm & 0xFFF) << 20;
+    
 
     for(uint32_t i = 0; i < INSTRUCTION_SIZE; i++){
         cpu->memory[offset + i] |= addi_instr >> i * BYTE_SIZE;
@@ -48,28 +49,28 @@ void write_addi(CPU* cpu, uint32_t offset, uint8_t rd, uint8_t rs1, int16_t imm)
 
 void cpu_dump_registers(CPU* cpu){
 
-    printf("%-10s %8d\n\n", "pc", cpu->pc);
+    printf("%-10s %8d\n\n", "pc", (int32_t)cpu->pc);
 
-    printf("%-10s %8d\n", "zero",cpu->regs[0]);
-    printf("%-10s %8d\n", "ra", cpu->regs[1]);
-    printf("%-10s %8d\n", "sp", cpu->regs[2]);
-    printf("%-10s %8d\n", "gp", cpu->regs[3]);
-    printf("%-10s %8d\n", "Tp", cpu->regs[4]);
-    printf("%-10s %8d\n", "t0", cpu->regs[5]);
-    printf("%-10s %8d\n", "t1", cpu->regs[6]);
-    printf("%-10s %8d\n", "t2", cpu->regs[7]);
+    printf("%-10s %8d\n", "zero", (int32_t)cpu->regs[0]);
+    printf("%-10s %8d\n", "ra", (int32_t)cpu->regs[1]);
+    printf("%-10s %8d\n", "sp", (int32_t)cpu->regs[2]);
+    printf("%-10s %8d\n", "gp", (int32_t)cpu->regs[3]);
+    printf("%-10s %8d\n", "Tp", (int32_t)cpu->regs[4]);
+    printf("%-10s %8d\n", "t0", (int32_t)cpu->regs[5]);
+    printf("%-10s %8d\n", "t1", (int32_t)cpu->regs[6]);
+    printf("%-10s %8d\n", "t2", (int32_t)cpu->regs[7]);
 
-    printf("%-10s %8d\n", "s0", cpu->regs[8]);
-    printf("%-10s %8d\n", "s1", cpu->regs[9]);
-    printf("%-10s %8d\n", "a0", cpu->regs[10]);
+    printf("%-10s %8d\n", "s0", (int32_t)cpu->regs[8]);
+    printf("%-10s %8d\n", "s1", (int32_t)cpu->regs[9]);
+    printf("%-10s %8d\n", "a0", (int32_t)cpu->regs[10]);
 
     for(int i = 0; i < 8; i++){
-        printf("%s%-9d %8d\n", "a", i, cpu->regs[i + 10]);
+        printf("%s%-9d %8d\n", "a", i, (int32_t)cpu->regs[i + 10]);
     }
     for(int i = 2; i < 12; i++){
-        printf("%s%-9d %8d\n", "s", i, cpu->regs[i + 16]);
+        printf("%s%-9d %8d\n", "s", i, (int32_t)cpu->regs[i + 16]);
     }
     for(int i = 3; i < 7; i++){
-        printf("%s%-9d %8d\n", "t", i, cpu->regs[i + 25]);
+        printf("%s%-9d %8d\n", "t", i, (int32_t)cpu->regs[i + 25]);
     }
 }
